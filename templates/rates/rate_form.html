@@ -1,0 +1,61 @@
+{% extends "abstract.html" %}
+
+{% block content %}
+  {% if updated %}
+    <h1 class="title has-text-centered">Update {{rate.source_currency}} to {{rate.destination_currency}}</h1>
+  {% else %}
+    <h1 class="title has-text-centered">Create New Category</h1>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    {% if not updated %}
+      <div class="field">
+        <label class="label">Source currency</label>
+        <div class="control">
+          {{ form.source_currency }}
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Target currency</label>
+        <div class="control">
+          {{ form.destination_currency }}
+        </div>
+      </div>
+    {% endif %}
+    <div class="field">
+      <label class="label">Rate</label>
+      <div class="control">
+        {{ form.rate }}
+      </div>
+      {% for error in form.rate.errors %}
+        <div class="notification is-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <div class="notification is-warning">
+      <p class="has-text-weight-bold">
+        {% if not updated %}
+          <u>Note</u>: A reverse rate will be created automatically.
+        {% else %}
+          <u>Note</u>: The reverse rate will be automatically modified.
+        {% endif %}
+      </p>
+    </div>
+    <div class="field">
+      <div class="control">
+        <input type="button" value="Cancel" onclick="history.go(-1); return true;" class="button is-light"/>
+        {% if updated %}
+          <button class="button is-primary" type="submit">Update</button>
+        {% else %}
+          <button class="button is-primary" type="submit">Create</button>
+        {% endif %}
+      </div>
+    </div>
+    {% if form.non_field_errors %}
+      <div class="notification is-danger">
+        {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </form>
+{% endblock content %}

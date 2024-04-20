@@ -1,0 +1,49 @@
+{% extends "abstract.html" %}
+
+{% block content %}
+  {% if updated %}
+    <h1 class="title has-text-centered">Update {{category.name}}</h1>
+  {% else %}
+    <h1 class="title has-text-centered">Create New Category</h1>
+  {% endif %}
+  <form action="" method="post">
+    {% csrf_token %}
+    <br>
+    <div class="field is-horizontal">
+      <div class="field-body has-addons">
+        <div class="field">
+          <label class="label">Category name</label>
+          <div class="control">
+            {{form.name}}
+          </div>
+        </div>
+        {% if not updated %}
+          <div class="field">
+            <label class="label">Income</label>
+            <div class="control">
+              {{form.is_income}}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <br>
+    <div class="field">
+      <div class="control">
+        <input type="button" value="Cancel" onclick="history.go(-1); return true;" class="button is-light"/>
+        {% if updated %}
+          <button class="button is-primary" type="submit">Update</button>
+        {% else %}
+          <button class="button is-primary" type="submit">Create</button>
+        {% endif %}
+        {% if form.errors %}
+          <div class="notification is-danger">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+{% endblock content %}

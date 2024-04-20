@@ -1,0 +1,61 @@
+{% extends "abstract.html" %}
+{% load socialaccount %}
+
+{% block content %}
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          <div class="notification is-success">
+            {{ message }}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <h1 class="title has-text-centered">Budget Manager</h1>
+        <form method="post">
+          {% csrf_token %}
+          <div class="field">
+            <label class="label">Username</label>
+            <div class="control">
+              <input class="input" type="text" name="username" placeholder="Username">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control">
+              <input class="input" type="password" name="password" placeholder="Password">
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <button class="button is-primary" type="submit">Login</button>
+            </div>
+          </div>
+          {% if form.errors %}
+            <div class="notification is-danger">
+              {% for error in form.errors.values %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <a href="{% provider_login_url 'google' %}" class="button is-warning">Login with Google</a>
+
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <p class="has-text-centered">Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

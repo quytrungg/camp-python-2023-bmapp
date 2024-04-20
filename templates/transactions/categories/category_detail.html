@@ -1,0 +1,57 @@
+{% extends "abstract.html" %}
+
+{% load url_replace %}
+
+{% block content %}
+  <br>
+  <a href="{% url 'category-list' %}" class="button is-link">Back</a>
+  {% if category.user %}
+    <a href="{% url 'category-update' category.pk %}" class="button is-primary">Update</a>
+  {% endif %}
+  <hr>
+  <h1 class="title">{{category.name}}</h1>
+  <br>
+  <div class="container">
+    <div class="card">
+      <header class="card-header">
+        <h1 class="card-header-title">
+          {{category.name}}
+        </h1>
+      </header>
+      <div class="card-content">
+        <div class="content">
+          <h2 class="title is-4">Category Details</h2>
+          <p><strong>Income: <label class="checkbox">
+            <input type="checkbox" {% if category.is_income %} checked {% endif %} disabled />
+          </label></strong></p>
+          <hr>
+
+          <h2 class="title is-4">Transactions</h2>
+          {% if not transactions %}
+            <p>No transactions found.</p>
+          {% else %}
+            <table class="table is-bordered is-striped is-narrow is-hoverable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for transaction in transactions %}
+                  <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.category }}</td>
+                    <td>{{ transaction.amount }}</td>
+                    <td>{{ transaction.note }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+{% endblock content %}

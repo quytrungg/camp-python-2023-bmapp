@@ -1,0 +1,132 @@
+{% extends "abstract.html" %}
+{% load url_replace %}
+{% load add_class %}
+
+{% block content %}
+  <h1 class="title">Transactions</h1>
+  <br>
+  <div class="container">
+    <div class="content">
+      <h3>There are <i>{{paginator.count}}</i> transaction in total.</h3>
+    </div>
+  </div>
+  <br>
+
+  <a href="{% url 'transaction-create' %}" class="button is-primary is-rounded"><b>Add Transaction</b></a>
+
+  <form method="get">
+    <br>
+    <div class="container">
+      <div class="box is-centered">
+        <div class="is-centered">
+          <div class="is-flex is-justify-content-space-between">
+            <label class="label">Amount</label>
+            <div class="control is-flex is-align-items-center">
+              {{ filter.form.amount|add_class:"select" }} <b>{{default_currency}}</b>
+            </div>
+          </div>
+          <br>
+          <div class="is-flex is-justify-content-space-between">
+            <label class="label">Category</label>
+            <div class="control is-flex is-align-items-center">
+              {{ filter.form.category|add_class:"input" }}
+            </div>
+          </div>
+          <br>
+          <div class="is-flex is-justify-content-space-between">
+            <label class="label">Wallet</label>
+            <div class="control is-flex is-align-items-center">
+              {{ filter.form.wallet|add_class:"input" }}
+            </div>
+          </div>
+          <br>
+          <div class="is-flex is-justify-content-space-between">
+            <label class="label">Date</label>
+            <div class="control is-flex is-align-items-center">
+              {{ filter.form.date|add_class:"select" }}
+            </div>
+          </div>
+          <br>
+          <div class="is-flex is-justify-content-space-between">
+            <label class="label">Note</label>
+            <div class="control is-flex is-align-items-center">
+              {{ filter.form.note|add_class:"input" }}
+            </div>
+          </div>
+          <br>
+          <div class="is-flex is-justify-content-space-between">
+            <label class="label"> Shared</label>
+            <div class="is-flex is-align-items-center">
+              {{ filter.form.is_shared|add_class:"checkbox" }}
+            </div>
+          </div>
+        </div>
+        <input type="submit" class="button is-info is-rounded" value="Search"/>
+      </div>
+    </div>
+    <br>
+    <div class="box">
+      {% if page_obj %}
+        {% for transaction in page_obj %}
+          <div class="columns is-mobile is-vcentered is-bordered">
+            <a class="column" href="{% url 'transaction-detail' transaction.pk %}">
+              <p class="is-size-5"><b>{{ transaction.category }}</b></p>
+              <p class="is-size-6">{{ transaction.date }}</p>
+              <p class="is-size-6">{{ transaction.note }}</p>
+            </a>
+            <div class="column has-text-right">
+              <p class="is-size-5">{{ transaction.amount }} {{default_currency}}</p>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="columns is-mobile is-vcentered is-bordered is-centered">
+          <p class="has-text-centered">
+            <b>No transactions found</b>
+          </p>
+        </div>
+      {% endif %}
+    </div>
+    <div class="field">
+      <label class="label" for="paginate-by">Rows per page:</label>
+      <div class="control">
+        <div class="select">
+          <select name="paginate-by" id="paginate-by" onchange="this.form.submit()">
+            {% for paginate_option in paginate_by_options%}
+              <option value="{{paginate_option}}" {% if page_obj.paginator.per_page == paginate_option %} selected {% endif %}>{{paginate_option}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+  </form>
+  <br>
+
+  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+    <ul class="pagination-list">
+      {% if page_obj.has_previous %}
+        <li>
+          <a class="pagination-link" href="?{% url_replace request 'page' 1 %}">&#x25C0;&#x25C0; first</a>
+        </li>
+        <li>
+          <a class="pagination-link" href="?{% url_replace request 'page' page_obj.previous_page_number %}">&#x25C0; previous</a>
+        </li>
+      {% endif %}
+
+      <li>
+        <a class="pagination-link is-current" aria-current="page">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </a>
+      </li>
+
+      {% if page_obj.has_next %}
+        <li>
+          <a class="pagination-link" href="?{% url_replace request 'page' page_obj.next_page_number %}">next &#x25B6;</a>
+        </li>
+        <li>
+          <a class="pagination-link" href="?{% url_replace request 'page' page_obj.paginator.num_pages %}">last &#x25B6;&#x25B6;</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endblock content %}

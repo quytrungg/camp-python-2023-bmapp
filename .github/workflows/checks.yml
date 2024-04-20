@@ -1,0 +1,76 @@
+
+name: CR
+
+on:
+  pull_request:
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  cr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.local
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/local_build.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/development.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - uses: actions/cache@v3
+      with:
+        path: ~/.cache/pre-commit
+        key: ${{ runner.os }}-pre-commit-${{ hashFiles('**/.pre-commit-config.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pre-commit-
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip wheel setuptools
+        pip install --requirement requirements/local_build.txt
+    - name: Prepare env
+      run: |
+        inv ci.prepare
+    - name: Run checks
+      run: |
+        inv git.run-hooks
+
+  commit-style:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/local_build.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install -U pip setuptools wheel
+          pip install --requirement requirements/local_build.txt
+      - name: Check commit style
+        if: ${{ github.base_ref != '' }}
+        # Ignore branch rule since GitHub actions create it's own merge branch
+        # Ignore WIP/wip ignore rule
+        run: |
+          gitlint --commits "origin/${{github.base_ref}}..origin/${{github.head_ref}}" -c general.ignore=UC1 -c ignore-by-title.regex=None

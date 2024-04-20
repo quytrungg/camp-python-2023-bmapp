@@ -1,0 +1,76 @@
+{% extends "abstract.html" %}
+{% block content %}
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          <div class="notification is-{{ message.tags|lower }}">
+            {{ message }}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <br>
+  <div class="container">
+    <div class="buttons is-justify-content-space-between">
+      <a href="{% url 'user-list' %}" class="button is-link">Back</a>
+    </div>
+    <div>
+      <div>
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-content">
+                <figure class="image is-128x128">
+                  <img src="{{ user.avatar }}" alt="{{ user.username }}'s Avatar">
+                </figure>
+              </div>
+              <div class="media-content">
+                <p class="title is-4">{{ user.first_name }} {{ user.last_name }}</p>
+                <p class="subtitle is-6">@{{ user.username }}</p>
+                {% if request.user == target_user %}
+                  <div class="button is-info">Edit Profile</div>
+                {% elif friend_request.accepted %}
+                  <a class="button is-primary" href="{% url 'remove-friend' user_id=user.pk %}">Friends</a>
+                {% elif friend_request %}
+                  {% if request.user != friend_request.to_user %}
+                    <a class="button" href="{% url 'cancel-friend' user_id=user.pk %}">Request Sent</a>
+                  {% else %}
+                    <div class="buttons is-centered">
+                      <a class="button is-primary is-spaced" href="{% url 'accept-friend' request_id=friend_request.id %}">Accept</a>
+                      <a class="button is-spaced" href="{% url 'decline-friend' user_id=user.pk %}">Decline</a>
+                    </div>
+                  {% endif %}
+                {% else %}
+                  <a class="button is-primary" href="{% url 'add-friend' user_id=user.pk %}">Add Friend</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div>
+        <div class="card">
+          <div class="card-content">
+            <div class="content">
+              <h3 class="title is-4">About {{ user.first_name }}</h3>
+              <hr>
+              <p><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+              <p><strong>Email:</strong> {{ user.email }}</p>
+              <p><strong>Phone Number:</strong> {{ user.phone_number }}</p>
+              <p><strong>Date of Birth:</strong> {{ user.date_of_birth }}</p>
+              <p><strong>Default Currency:</strong> {{ user.default_currency }}</p>
+              {% if user.is_premium %}
+                <p><strong>Membership:</strong> <span class="tag is-warning is-medium">Premium</span></p>
+              {% else %}
+                <p><strong>Membership:</strong> <span class="tag is-info is-medium">Standard</span></p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,118 @@
+{% extends "abstract.html" %}
+
+{% block content %}
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          <div class="notification is-{{ message.tags|lower }}">
+            {{ message }}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h2 class="title is-2">
+        Welcome back, <b><i>{{user.username}}</i></b>!
+      </h2>
+      <p class="subtitle">
+        A simple and intuitive app for tracking your finances.
+      </p>
+    </div>
+  </div>
+
+  <div class="is-flex is-justify-content-space-between">
+    <div>
+      <p class="title is-4">Total Balance: <b>{{ balance }}</b></p>
+    </div>
+    <div>
+      <div class="select is-rounded">
+        <select name="selected_currency">
+          <option>{{ user.default_currency }}</option>
+          {% for currency in currencies%}
+            <option>{{ currency }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <a href="{% url 'transaction-create' %}" class="button is-primary is-rounded"><b>Add Transaction</b></a>
+  <br>
+  <br>
+  <div>
+    <div class="container box">
+      <div class="is-flex is-justify-content-space-between">
+        <p class="is-size-5">Spending report</p>
+        <a>See all</a>
+      </div>
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-narrow">
+            <div class="tabs is-centered is-toggle">
+              <ul>
+                <li {% if tab == 'week' %}class="is-active"{% endif %}><a href="?tab=week">Week</a></li>
+                <li {% if tab == 'month' %}class="is-active"{% endif %}><a href="?tab=month">Month</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="is-centered">
+          <div class="is-4-tablet is-3-desktop">
+            <div class="box has-text-centered">
+              <h3 class="title is-3">Total: <b>{{ total_period }}</b> {{ user.default_currency }}</h3>
+              <p class="is-size-5">
+                Total spent this {{ tab }}: <b>{{ stats }}%</b>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="is-flex is-justify-content-space-between">
+        <p class="is-size-5">Top spending</p>
+        <a>See all</a>
+      </div>
+      <table class="table is-striped is-fullwidth">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for top in top_spending%}
+            <tr>
+              <td>{{ top.category__name }}</td>
+              <td>{{ top.total_category }}</td>
+              <td>{{ top.percentage }}%</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="container box">
+      <div class="is-flex is-justify-content-space-between">
+        <p class="is-size-5">Recent transactions</p>
+        <a href="{% url 'transaction-list' %}">See all</a>
+      </div>
+      <div class="box">
+        {% for transaction in transactions %}
+          <div class="columns is-mobile is-vcentered is-bordered">
+            <a class="column" href="{% url 'transaction-detail' transaction.pk %}">
+              <p class="is-size-5"><b>{{ transaction.category }}</b></p>
+              <p class="is-size-6">{{ transaction.date }}</p>
+            </a>
+            <div class="column has-text-right">
+              <p class="is-size-5">{{ transaction.amount }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,78 @@
+{% extends "abstract.html" %}
+
+{% block content %}
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          <div class="notification is-success">
+            {{ message }}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <h1 class="title has-text-centered">Update information</h1>
+        <form method="post">
+          {% csrf_token %}
+          <div class="field">
+            <label class="label">First name</label>
+            <div class="control">
+              {{ form.first_name }}
+            </div>
+            {% for error in form.first_name.errors %}
+              <div class="notification is-danger">{{error}}</div>
+            {% endfor %}
+          </div>
+          <div class="field">
+            <label class="label">Last name</label>
+            <div class="control">
+              {{ form.last_name }}
+            </div>
+            {% for error in form.last_name.errors %}
+              <div class="notification is-danger">{{error}}</div>
+            {% endfor %}
+          </div>
+          <div class="field">
+            <label class="label">Date of birth</label>
+            <div class="control">
+              {{ form.date_of_birth }}
+            </div>
+            {% for error in form.date_of_birth.errors %}
+              <div class="notification is-danger">{{error}}</div>
+            {% endfor %}
+          </div>
+          <div class="field">
+            <label class="label">Default currency</label>
+            <div class="control">
+              {{ form.default_currency }}
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <button class="button is-primary" type="submit">Continue</button>
+            </div>
+          </div>
+          {% if form.non_field_errors %}
+            <div class="notification is-danger">
+              {% for error in form.non_field_errors.values %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <p class="has-text-centered">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

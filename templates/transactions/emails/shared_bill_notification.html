@@ -1,0 +1,14 @@
+{% extends "email_base.html" %}
+{% load i18n %}
+
+{% block email_body %}
+  <h2>Shared Bill Notification</h2>
+  <p>Dear {{ username }},</p>
+
+  <p>This is the shared bill transaction that you were tagged:</p>
+  <div>
+    <p>Author: {{ transaction.user.username }}</p>
+    <p>Amount: {{ transaction.amount }}</p>
+    <p>Category: {{ transaction.category.name }}</p>
+  </div>
+{% endblock %}

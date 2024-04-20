@@ -1,0 +1,11 @@
+
+{% extends "email_base.html" %}
+{% load i18n %}
+
+{% block email_body %}
+  {% autoescape off %}
+    <div>
+      <p>Click here to accept the friend request: {{ friend_request_url }}</p>
+    </div>
+  {% endautoescape %}
+{% endblock %}

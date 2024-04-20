@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Transaction Report</title>
+  </head>
+  <body>
+    <h2>Admin Weekly Report</h2>
+    <p>Dear Admin,</p>
+    <p>Here is the weekly report:</p>
+
+    <p>Total number of transactions made: {{ total_transactions }}</p>
+    <hr>
+    <p>Total number of categories used: {{ total_category_used }}</p>
+    <hr>
+    <p>New users:</p>
+    {% if new_users %}
+      {% for user in new_users %}
+        <p>{{ user }}</p>
+      {% endfor %}
+    {% else %}
+      <p>No users created in this week.</p>
+    {% endif %}
+
+    <p>Sincerely,</p>
+    <p>Budget Manager App</p>
+  </body>
+</html>

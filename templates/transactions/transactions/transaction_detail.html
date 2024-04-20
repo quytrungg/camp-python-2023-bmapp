@@ -1,0 +1,30 @@
+{% extends "abstract.html" %}
+{% block content %}
+  <br>
+  <div class="buttons is-justify-content-space-between">
+    <a href="{% url 'transaction-list' %}" class="button is-link">Back</a>
+    <a href="{% url 'transaction-update' transaction.pk %}" class="button is-primary">Edit</a>
+  </div>
+  <hr>
+  <div class="container box">
+    <div class="content">
+      <h3><strong>Category:</strong> {{ transaction.category }}</h3>
+    </div>
+    <div>
+      <p><strong>Note:</strong> {{ transaction.note }}</p>
+    </div>
+    <br>
+    <div class="content">
+      <h2 {% if income %}class="has-text-primary"{% else %}class="has-text-danger"{% endif %}><strong>Amount:</strong> {{ transaction.amount }} {{ currency }}</h2>
+    </div>
+  </div>
+  <div class="container box">
+    <div>
+      <p><strong>Date:</strong> {{ transaction.date|date }}</p>
+    </div>
+    <div>
+      <p><strong>Wallet:</strong> {{ transaction.wallet.name }}</p>
+    </div>
+  </div>
+  <a href="{% url 'transaction-delete' transaction.pk %}" class="button is-danger">Delete Transaction</a>
+{% endblock content %}

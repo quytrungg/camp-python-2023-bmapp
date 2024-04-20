@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Manger</title>
+    <style>
+      .columns.is-mobile.is-vcentered.is-bordered {
+        border-bottom: 2px solid #ccc;
+      }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  </head>
+  <body>
+    {% if user.is_authenticated %}
+      <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+        <div class="navbar-menu">
+          <div class="navbar-start">
+            <a class="navbar-item is-primary" href="{% url 'home' %}">
+              Home
+            </a>
+            <a class="navbar-item is-primary" href="{% url 'user-list' %}">
+              Explore
+            </a>
+            <a class="navbar-item is-primary" href="{% url 'transaction-list' %}">
+              Transactions
+            </a>
+            <a class="navbar-item is-primary" href="{% url 'category-list' %}">
+              Categories
+            </a>
+            <a class="navbar-item is-primary" href="{% url 'wallet-list' %}">
+              Wallets
+            </a>
+            <a class="navbar-item is-primary" href="{% url 'rate-list' %}">
+              Rates
+            </a>
+          </div>
+          <div class="navbar-end">
+            <div class="navbar-item tags are-medium are-rounded">
+              <a class="tag" href="{% url 'friend-list' %}">
+                Friends
+              </a>
+              <a class="tag is-primary">
+                Profile
+              </a>
+              <a class="tag is-info" href="{% url 'logout' %}">
+                Log Out
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    {% endif %}
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-half is-centered has-text-centered">
+          {% block content %}
+          {% endblock content %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

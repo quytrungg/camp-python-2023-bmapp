@@ -1,0 +1,90 @@
+{% extends "abstract.html" %}
+{% load url_replace %}
+
+{% block content %}
+  <h1 class="title">Currency Exchange Rate List</h1>
+  <br>
+
+  <div class="container">
+    <div class="content">
+      <h3>You have <i>{{paginator.count}}</i> exchange rates.</h3>
+    </div>
+  </div>
+
+  <a href="{% url 'rate-create' %}" class="button is-primary is-rounded">Create exchange rate</a>
+  <br>
+
+  <form method="get">
+    <br>
+    <div>
+      {{ filter.form.as_table }}
+      <input type="submit" value="Search"/>
+    </div>
+    <br>
+    <div class="field">
+      <label class="label" for="paginate-by">Rows per page:</label>
+      <div class="control">
+        <div class="select">
+          <select name="paginate-by" id="paginate-by" onchange="this.form.submit()">
+            {% for paginate_option in paginate_by_options%}
+              <option value="{{paginate_option}}" {% if page_obj.paginator.per_page == paginate_option %} selected {% endif %}>{{paginate_option}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+  </form>
+  <br>
+
+  <div class="table-container">
+    <table class="table is-striped is-fullwidth">
+      <thead>
+        <tr>
+          <th>Source currency</th>
+          <th>Target currency</th>
+          <th>Rate</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rate in rates %}
+          <tr>
+            <td>{{rate.source_currency}}</td>
+            <td>{{rate.destination_currency}}</td>
+            <td>{{rate.rate}}</td>
+            <td><a href="{% url 'rate-update' rate.pk %}">Update</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <br>
+
+  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+    <ul class="pagination-list">
+      {% if page_obj.has_previous %}
+        <li>
+          <a class="pagination-link" href="?{% url_replace request 'page' 1 %}">&#x25C0;&#x25C0; first</a>
+        </li>
+        <li>
+          <a class="pagination-link" href="?{% url_replace request 'page' page_obj.previous_page_number %}">&#x25C0; previous</a>
+        </li>
+      {% endif %}
+
+      <li>
+        <a class="pagination-link is-current" aria-current="page">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </a>
+      </li>
+
+      {% if page_obj.has_next %}
+        <li>
+          <a class="pagination-link" href="?{% url_replace request 'page' page_obj.next_page_number %}">next &#x25B6;</a>
+        </li>
+        <li>
+          <a class="pagination-link" href="?{% url_replace request 'page' page_obj.paginator.num_pages %}">last &#x25B6;&#x25B6;</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endblock content %}

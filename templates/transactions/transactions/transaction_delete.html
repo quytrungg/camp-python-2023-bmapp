@@ -1,0 +1,11 @@
+{% extends "abstract.html" %}
+{% block content %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="notification is-warning">
+      <p>Are you sure you want to <b>delete</b> this transaction?</p>
+    </div>
+    <input type="button" value="Cancel" onclick="history.go(-1); return true;" class="button is-light"/>
+    <input type="submit" value="Delete" class="button is-danger">
+  </form>
+{% endblock content %}
